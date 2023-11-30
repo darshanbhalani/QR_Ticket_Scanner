@@ -1,0 +1,46 @@
+name: QR_Ticket_Scanner
+description: QR Scanner for Metro tickets
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.15.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  permission_handler: ^11.0.1
+  qr_code_scanner: ^1.0.1
+  dropdown_textfield: ^1.0.8
+  firebase_database: ^10.3.6
+  cloud_firestore: ^4.13.3
+  firebase_core: ^2.24.0
+  audioplayers: ^5.2.1
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/assets/logo.png"
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/assets/Long.mp3
+    - assets/assets/Single.mp3
+    - assets/assets/beep-11.mp3
+    - assets/assets/logo.png
