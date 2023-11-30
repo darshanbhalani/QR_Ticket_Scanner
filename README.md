@@ -1,16 +1,9 @@
-# qr_ticket_scanner
+# MetroX QR Ticket Scanner 
 
 QR Scanner for Metro tickets
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+![Desktop - 18](https://github.com/darshanbhalani/QR_Ticket_Scanner/assets/108427824/67303f58-2e4a-47aa-a813-19349df46fef)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
