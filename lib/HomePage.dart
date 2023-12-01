@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   String? status;
   late AudioPlayer audioPlayer;
   bool isLoading=true;
+  bool isExit=false;
 
 
   @override
@@ -42,6 +44,31 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        showDialog(context: context, builder: (context) => AlertDialog(
+          title: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.exit_to_app),
+              SizedBox(width: 5,),
+              Text("Exit App"),
+            ],
+          ),
+          content: const Text("Sure you want to Exit App ?"),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child:Text("No",style:TextStyle(color: c1),)),
+            TextButton(
+                onPressed: () async {
+                  isExit=true;
+                  setState(() {});
+                  exit(0);
+                },
+                child:Text("Yes",style: TextStyle(color: c1),))
+          ],
+        ));
         return false;
       },
       child: Scaffold(
