@@ -24,6 +24,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _animationController!.forward();
     _animationController!.addStatusListener((status) async {
+      if(cityName==null || stationName==null || gateName==null){
+        isNull=true;
+      }
       if (status == AnimationStatus.completed) {
         Navigator.pushReplacement(
             context,

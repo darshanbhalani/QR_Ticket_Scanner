@@ -18,8 +18,11 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Map data = {};
   bool? flag;
+  bool? flag1 = isNull!;
   String? status;
   late AudioPlayer audioPlayer;
+  bool isLoading=true;
+
 
   @override
   void initState() {
@@ -47,15 +50,13 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: c1,
           actions: [
             GestureDetector(
-              onTap: (){
-                setState(() {
-                });
-              },
+                onTap: () {
+                  setState(() {});
+                },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Icon(Icons.refresh),
-                )
-            ),
+                )),
             GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -84,18 +85,33 @@ class _HomePageState extends State<HomePage> {
                     cutOutSize: 300),
                 onQRViewCreated: (QRViewController controller) {
                   this.controller = controller;
-                  controller.scannedDataStream.listen((scanData) {
-                    setState(() {
-                      result = scanData;
-                      if (flag == null) {
-                        checkQR();
-                      }
+                    controller.scannedDataStream.listen((scanData) {
+                     if(!isNull!){
+                       setState(() {
+                         result = scanData;
+                         if (flag == null) {
+                           checkQR();
+                         }
+                       });
+                     }else{
+                       if(flag1!){
+                         flag1=false;
+                         setState(() {});
+                         snackBar(context, Colors.red, "Please select data.");
+                         Timer(const Duration(seconds: 2), () {
+                           flag1=true;
+                           setState(() {});
+                         });
+                       }
+                     }
                     });
-                  });
+
                 },
               ),
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -105,12 +121,13 @@ class _HomePageState extends State<HomePage> {
                       TextSpan(
                         text: 'City Name : ',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black87,fontSize: 20),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            fontSize: 20),
                       ),
                       TextSpan(
                         text: cityName.toString(),
-                        style: TextStyle(
-                             color: Colors.grey,fontSize: 20),
+                        style: TextStyle(color: Colors.grey, fontSize: 20),
                       ),
                     ],
                   ),
@@ -126,12 +143,13 @@ class _HomePageState extends State<HomePage> {
                       TextSpan(
                         text: 'Station Name : ',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black87,fontSize: 20),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            fontSize: 20),
                       ),
                       TextSpan(
                         text: stationName.toString(),
-                        style: TextStyle(
-                            color: Colors.grey,fontSize: 20),
+                        style: TextStyle(color: Colors.grey, fontSize: 20),
                       ),
                     ],
                   ),
@@ -147,12 +165,13 @@ class _HomePageState extends State<HomePage> {
                       TextSpan(
                         text: 'Gate Name : ',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black87,fontSize: 20),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            fontSize: 20),
                       ),
                       TextSpan(
                         text: gateName.toString(),
-                        style: TextStyle(
-                            color: Colors.grey,fontSize: 20),
+                        style: TextStyle(color: Colors.grey, fontSize: 20),
                       ),
                     ],
                   ),
@@ -217,7 +236,9 @@ class _HomePageState extends State<HomePage> {
 
   checkQR() async {
     flag = true;
-    loading(context);
+    isLoading=false;
+    setState(() {});
+    loading(context,isLoading);
     List temp = [];
     data = {};
     try {
@@ -235,28 +256,32 @@ class _HomePageState extends State<HomePage> {
             .doc(data["Id"].toString())
             .get();
         if (snapshot.exists) {
-          String? tempNum;
-          await fire
-              .collection("qr-ticket-data")
-              .doc(data["Id"].toString())
-              .get()
-              .then((value) {
-            tempNum = value["Tickets"];
-          });
           audioPlayer.play(AssetSource("assets/Single.mp3"));
           status = "Pass";
           setState(() {});
-          if (double.parse(tempNum.toString()) > 1.0) {
+          if (gateName == "Exit") {
+            String? tempNum;
             await fire
                 .collection("qr-ticket-data")
                 .doc(data["Id"].toString())
-                .update({
-              "Tickets": (double.parse(tempNum.toString()) - 1).toString()
+                .get()
+                .then((value) {
+              tempNum = value["Tickets"];
             });
-          } else {
-            await fire.collection("qr-ticket-data").doc(data["Id"]).delete();
+            if (double.parse(tempNum.toString()) > 1.0) {
+              await fire
+                  .collection("qr-ticket-data")
+                  .doc(data["Id"].toString())
+                  .update({
+                "Tickets": (double.parse(tempNum.toString()) - 1).toString()
+              });
+            } else {
+              await fire.collection("qr-ticket-data").doc(data["Id"]).delete();
+            }
           }
+          isLoading=true;
           Navigator.pop(context);
+          setState(() {});
           Timer(const Duration(seconds: 5), () {
             flag = null;
             status = null;
@@ -280,7 +305,10 @@ class _HomePageState extends State<HomePage> {
     Timer(const Duration(seconds: 2), () {
       flag = null;
       status = null;
+      audioPlayer.stop();
+      isLoading=true;
       setState(() {});
     });
   }
+
 }

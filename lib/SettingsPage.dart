@@ -15,9 +15,15 @@ class _SettingsPageState extends State<SettingsPage> {
   final controller3 = SingleValueDropDownController();
   final _formkey = GlobalKey<FormState>();
   bool flag = false;
+  bool? flag1=false;
+  bool isLoading=true;
 
   @override
   void initState() {
+    if(controller1.dropDownValue == null){
+      flag1=true;
+      setState(() {});
+    }
     // controller1.setDropDown(const DropDownValueModel(name: "Ahmedabad", value: "Ahmedabad"));
     // controller3.setDropDown(const DropDownValueModel(name: "Entry", value: "Entry"));
     super.initState();
@@ -43,42 +49,45 @@ class _SettingsPageState extends State<SettingsPage> {
             key: _formkey,
             child: Column(
               children: [
-                dropField(context, "City", citiesList, controller1, true),
+                dropField(context, "City", citiesList, controller1, true,true),
                 dropField(context, "Metro Station", metroStationsList,
-                    controller2, false),
-                dropField(context, "Gate", gateList, controller3, false),
-                const SizedBox(
-                  height: 250,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    if(_formkey.currentState!.validate()){
-                    cityName=controller1.dropDownValue!.value;
-                    stationName=controller2.dropDownValue!.value;
-                    gateName=controller3.dropDownValue!.value;
-                    setState(() {
-                    });
-                    Navigator.pop(context);
-                    snackBar(context, Colors.green, "Data Saved...");}
-                    setState(() {
-                    });
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 150,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15), color: c1),
-                    child: const Center(
-                        child: Text(
-                      "Save",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white),
-                    )),
-                  ),
-                )
+                    controller2, false,flag1 ?? false),
+                dropField(context, "Gate", gateList, controller3, false,flag1 ?? false),
               ],
+            ),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: FloatingActionButton.extended(
+            elevation: 0,
+            focusElevation: 0,
+            hoverElevation: 0,
+            highlightElevation: 0,
+            disabledElevation: 0,
+            onPressed: () async {
+              if(_formkey.currentState!.validate()){
+                cityName=controller1.dropDownValue!.value;
+                stationName=controller2.dropDownValue!.value;
+                gateName=controller3.dropDownValue!.value;
+                setState(() {});
+                isNull=flag;
+                Navigator.pop(context);
+                snackBar(context, Colors.green, "Data Saved...");}
+              setState(() {
+              });
+            },
+            label: Container(
+              height: 55,
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                  color: c1, borderRadius: BorderRadius.circular(20)),
+              child: const Center(
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  )),
             ),
           ),
         ),
@@ -87,15 +96,18 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   dropField(context, String lable, List<DropDownValueModel> items,
-      SingleValueDropDownController controller, bool condition) {
+      SingleValueDropDownController controller, bool condition,bool flag) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         DropDownTextField(
           onChanged: (value) async {
+            isLoading=false;
+            flag1=true;
+            setState(() {});
             if (condition) {
               if (controller1.dropDownValue!.value.toString() == "Ahmedabad") {
-                loading(context);
+                loading(context,isLoading);
                 await buildDataBase(
                     controller1.dropDownValue!.value.toString());
                 setState(() {});
@@ -114,18 +126,18 @@ class _SettingsPageState extends State<SettingsPage> {
             }
             return null;
           },
-          isEnabled: true,
+          isEnabled: flag,
           clearOption: false,
           controller: controller,
           dropDownItemCount: 5,
           dropDownList: items,
           dropdownRadius: 0,
           textFieldDecoration: InputDecoration(
-            labelStyle: const TextStyle(color: Colors.black87),
+            labelStyle: TextStyle(color: flag ? Colors.black54:Colors.black12),
             labelText: lable,
             disabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.grey,
+                color: Colors.black12,
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -142,11 +154,11 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             errorBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: Colors.grey,
+                color: Colors.red,
               ),
             ),
             enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey),
+              borderSide: BorderSide(color: Colors.black45),
             ),
           ),
         ),

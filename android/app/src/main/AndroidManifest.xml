@@ -4,7 +4,7 @@
         tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
-        android:label="qr_ticket_scanner"
+        android:label="QR Ticket Scanner"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

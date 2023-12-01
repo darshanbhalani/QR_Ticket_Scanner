@@ -3,6 +3,7 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+bool? isNull;
 String? cityName;
 String? stationName;
 String? gateName;
@@ -39,19 +40,27 @@ List<DropDownValueModel> gateList = [
   const DropDownValueModel(name: "Exit", value: "Exit"),
 ];
 
-loading(context) {
+loading(context,bool flag) {
   return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        return (
-            Center(
-                child: SizedBox(
-                    height: 40,
-                    width: 40,
-                    child:  CircularProgressIndicator(color: c1)
-                )
-            ));
+        return WillPopScope(
+          onWillPop: () async{
+            if(!flag){
+              snackBar(context, Colors.black87, "Please wait until process completed.");
+            }
+            return flag;
+          },
+          child: (
+              Center(
+                  child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      child:  CircularProgressIndicator(color: c1)
+                  )
+              )),
+        );
       });
 }
 
