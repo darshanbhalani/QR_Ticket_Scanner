@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:QR_Ticket_Scanner/HomePage.dart';
+import 'package:provider/provider.dart';
 
 import 'Const.dart';
+import 'ProviderClass.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void initState() {
+    var DataProviderModel = Provider.of<DataProvider>(context, listen: false);
     super.initState();
     _animationController = AnimationController(
       vsync: this,
@@ -24,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
     _animationController!.forward();
     _animationController!.addStatusListener((status) async {
-      if(cityName==null || stationName==null || gateName==null){
+      if(DataProviderModel.cityName==null || DataProviderModel.stationName==null || DataProviderModel.gateName==null){
         isNull=true;
       }
       if (status == AnimationStatus.completed) {

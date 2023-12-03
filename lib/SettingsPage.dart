@@ -1,6 +1,8 @@
+import 'package:QR_Ticket_Scanner/ProviderClass.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:QR_Ticket_Scanner/Const.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -31,67 +33,73 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        cityName == null || stationName == null || gateName == null
-            ? flag = false
-            : flag = true;
-        return flag;
+    return Consumer<DataProvider>(
+      builder: (BuildContext context, DataProvider DataProviderModel, Widget? child) {
+        return  WillPopScope(
+          onWillPop: () async {
+            DataProviderModel.cityName == null || DataProviderModel.stationName == null || DataProviderModel.gateName == null
+                ? flag = false
+                : flag = true;
+            return flag;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Settings"),
+              backgroundColor: c1,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              child: Form(
+                key: _formkey,
+                child: Column(
+                  children: [
+                    dropField(context, "City", citiesList, controller1, true,true),
+                    dropField(context, "Metro Station", metroStationsList,
+                        controller2, false,flag1 ?? false),
+                    dropField(context, "Gate", gateList, controller3, false,flag1 ?? false),
+                  ],
+                ),
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: FloatingActionButton.extended(
+                elevation: 0,
+                focusElevation: 0,
+                hoverElevation: 0,
+                highlightElevation: 0,
+                disabledElevation: 0,
+                onPressed: () async {
+                  if(_formkey.currentState!.validate()){
+                    DataProviderModel.updateData(
+                        controller1.dropDownValue!.value,
+                        controller2.dropDownValue!.value,
+                        controller3.dropDownValue!.value
+                    );
+                    setState(() {});
+                    isNull=flag;
+                    Navigator.pop(context);
+                    snackBar(context, Colors.green, "Data Saved...");}
+                  setState(() {
+                  });
+                },
+                label: Container(
+                  height: 55,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  decoration: BoxDecoration(
+                      color: c1, borderRadius: BorderRadius.circular(20)),
+                  child: const Center(
+                      child: Text(
+                        "Save",
+                        style: TextStyle(color: Colors.white, fontSize: 22),
+                      )),
+                ),
+              ),
+            ),
+          ),
+        );
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Settings"),
-          backgroundColor: c1,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          child: Form(
-            key: _formkey,
-            child: Column(
-              children: [
-                dropField(context, "City", citiesList, controller1, true,true),
-                dropField(context, "Metro Station", metroStationsList,
-                    controller2, false,flag1 ?? false),
-                dropField(context, "Gate", gateList, controller3, false,flag1 ?? false),
-              ],
-            ),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: FloatingActionButton.extended(
-            elevation: 0,
-            focusElevation: 0,
-            hoverElevation: 0,
-            highlightElevation: 0,
-            disabledElevation: 0,
-            onPressed: () async {
-              if(_formkey.currentState!.validate()){
-                cityName=controller1.dropDownValue!.value;
-                stationName=controller2.dropDownValue!.value;
-                gateName=controller3.dropDownValue!.value;
-                setState(() {});
-                isNull=flag;
-                Navigator.pop(context);
-                snackBar(context, Colors.green, "Data Saved...");}
-              setState(() {
-              });
-            },
-            label: Container(
-              height: 55,
-              width: MediaQuery.of(context).size.width * 0.9,
-              decoration: BoxDecoration(
-                  color: c1, borderRadius: BorderRadius.circular(20)),
-              child: const Center(
-                  child: Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
-                  )),
-            ),
-          ),
-        ),
-      ),
     );
   }
 

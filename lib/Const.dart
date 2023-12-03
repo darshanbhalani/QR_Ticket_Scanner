@@ -6,9 +6,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 bool? isNull;
-String? cityName;
-String? stationName;
-String? gateName;
 List metroData = [];
 List<DropDownValueModel> metroStationsList = [];
 
