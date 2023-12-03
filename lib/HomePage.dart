@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                           width: 50,
                           decoration: BoxDecoration(
                               color: flag == null || status == null
-                                  ? c1
+                                  ? Colors.grey
                                   : status == "Pass"
                                   ? Colors.green
                                   : Colors.red,
@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: flag == null || status == null
-                                  ? c1
+                                  ? Colors.grey
                                   : status == "Pass"
                                   ? Colors.green
                                   : Colors.red,
